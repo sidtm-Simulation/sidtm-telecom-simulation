@@ -1,0 +1,1692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIDTM TelecomTycoon: Complete Auction Simulation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Login Screen */
+        .login-screen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .login-container {
+            background: rgba(255,255,255,0.95);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        .sidtm-logo {
+            width: 120px;
+            height: 80px;
+            background: linear-gradient(135deg, #2a5298, #1e3c72);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
+            border-radius: 10px;
+            margin: 0 auto 20px;
+        }
+
+        .login-title {
+            font-size: 2.5em;
+            color: #2a5298;
+            margin-bottom: 10px;
+        }
+
+        .login-subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .login-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .login-option {
+            background: linear-gradient(135deg, #2a5298, #1e3c72);
+            color: white;
+            border: none;
+            padding: 30px 20px;
+            border-radius: 15px;
+            font-size: 1.2em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .login-option:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(42, 82, 152, 0.3);
+        }
+
+        .login-option.instructor {
+            background: linear-gradient(135deg, #28a745, #20c997);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e9ecef;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #2a5298;
+            box-shadow: 0 0 0 3px rgba(42, 82, 152, 0.1);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #2a5298, #1e3c72);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            width: 100%;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(42, 82, 152, 0.3);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #28a745, #20c997);
+        }
+
+        /* Main Game Interface */
+        .game-interface {
+            display: none;
+        }
+
+        .header {
+            background: rgba(255,255,255,0.95);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            color: #2a5298;
+            font-size: 2.5em;
+            margin-bottom: 5px;
+        }
+
+        .era-indicator {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        .team-info {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .info-card {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            min-width: 140px;
+        }
+
+        .info-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #2a5298;
+            margin-bottom: 5px;
+        }
+
+        .info-label {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        /* Government Notice */
+        .government-notice {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border: 3px solid #ffc107;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 0;
+            text-align: center;
+        }
+
+        .notice-title {
+            color: #856404;
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        .notice-content {
+            font-size: 1.1em;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        /* Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e9ecef;
+            flex-wrap: wrap;
+        }
+
+        .nav-tab {
+            padding: 15px 25px;
+            background: none;
+            border: none;
+            border-bottom: 3px solid transparent;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .nav-tab.active {
+            color: #2a5298;
+            border-bottom-color: #2a5298;
+            background: #f8f9fa;
+        }
+
+        /* Auction Interface */
+        .auction-interface {
+            background: rgba(255,255,255,0.95);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            display: none;
+        }
+
+        .auction-status {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            border: 2px solid #2196f3;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .auction-round {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+
+        .time-remaining {
+            font-size: 1.2em;
+            color: #d32f2f;
+            font-weight: bold;
+        }
+
+        .spectrum-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .spectrum-table th,
+        .spectrum-table td {
+            padding: 12px;
+            text-align: center;
+            border: 1px solid #e9ecef;
+            font-size: 14px;
+        }
+
+        .spectrum-table th {
+            background: linear-gradient(135deg, #2a5298, #1e3c72);
+            color: white;
+            font-weight: 600;
+        }
+
+        .spectrum-table tbody tr:hover {
+            background: #e3f2fd;
+            cursor: pointer;
+        }
+
+        .bid-panel {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .bid-calculator {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .calc-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        /* Strategy Panel */
+        .strategy-panel {
+            background: rgba(255,255,255,0.95);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            display: none;
+        }
+
+        .strategy-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .strategy-category {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            border-left: 4px solid #2a5298;
+        }
+
+        .strategy-options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .strategy-option {
+            background: white;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .strategy-option:hover {
+            border-color: #2a5298;
+            background: #e8f2ff;
+        }
+
+        .strategy-option.selected {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+
+        /* Performance Dashboard */
+        .performance-dashboard {
+            background: rgba(255,255,255,0.95);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .metric-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            border: 2px solid #e9ecef;
+        }
+
+        .metric-value {
+            font-size: 2.2em;
+            font-weight: bold;
+            color: #2a5298;
+            margin-bottom: 8px;
+        }
+
+        .metric-label {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        /* Leaderboard */
+        .leaderboard {
+            background: rgba(255,255,255,0.95);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+
+        .leaderboard-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        .leaderboard-table th,
+        .leaderboard-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .leaderboard-table th {
+            background: linear-gradient(135deg, #2a5298, #1e3c72);
+            color: white;
+            font-weight: 600;
+        }
+
+        .team-row.current-team {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            font-weight: bold;
+        }
+
+        /* Instructor Panel */
+        .instructor-panel {
+            background: linear-gradient(135deg, #d4edda, #c3e6cb);
+            border: 3px solid #28a745;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .instructor-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .login-options {
+                grid-template-columns: 1fr;
+            }
+            
+            .team-info {
+                gap: 10px;
+            }
+            
+            .nav-tabs {
+                flex-direction: column;
+            }
+        }
+
+        /* Animations */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            z-index: 1000;
+            max-width: 400px;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); }
+            to { transform: translateX(0); }
+        }
+
+        .notification.success { background: #28a745; }
+        .notification.warning { background: #ffc107; color: #333; }
+        .notification.error { background: #dc3545; }
+        .notification.info { background: #17a2b8; }
+
+        .hidden { display: none !important; }
+
+        /* Investment Panel */
+        .investment-panel {
+            background: linear-gradient(135deg, #f3e5f5, #e1bee7);
+            border: 2px solid #9c27b0;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .investment-title {
+            color: #4a148c;
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .investment-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .investment-item {
+            background: white;
+            border: 1px solid #9c27b0;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .investment-slider {
+            width: 100%;
+            margin: 10px 0;
+        }
+
+        /* Service Rollout Panel */
+        .service-panel {
+            background: linear-gradient(135deg, #fff8e1, #ffecb3);
+            border: 2px solid #ff9800;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .service-title {
+            color: #e65100;
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        /* Revenue Model Panel */
+        .revenue-panel {
+            background: linear-gradient(135deg, #e8f5e8, #c8e6c8);
+            border: 2px solid #4caf50;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .revenue-title {
+            color: #2e7d32;
+            font-weight: bold;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .price-input {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .segment-card {
+            background: white;
+            border: 1px solid #4caf50;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div class="login-screen" id="loginScreen">
+        <div class="login-container">
+            <div class="sidtm-logo">SIDTM</div>
+            <h1 class="login-title">📡 TelecomTycoon</h1>
+            <p class="login-subtitle">Complete Telecom Auction Simulation Platform<br>
+            <strong>SIDTM - Symbiosis Institute of Digital Technology & Management</strong></p>
+            
+            <div class="login-options" id="loginOptions">
+                <button class="login-option" onclick="selectUserType('team')">
+                    👥<br>Team Login<br>
+                    <small>Participate in Simulation</small>
+                </button>
+                <button class="login-option instructor" onclick="selectUserType('instructor')">
+                    🎓<br>Instructor Login<br>
+                    <small>Manage & Monitor Simulation</small>
+                </button>
+            </div>
+
+            <form id="loginForm" style="display: none;" onsubmit="login(event)">
+                <div class="form-group">
+                    <label class="form-label" id="teamLabel">Team Name</label>
+                    <input type="text" class="form-control" id="teamName" required placeholder="Enter unique team name">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Access Code</label>
+                    <input type="password" class="form-control" id="accessCode" required placeholder="Enter simulation access code">
+                </div>
+                <button type="submit" class="btn">🚀 Enter Simulation</button>
+                <button type="button" class="btn" onclick="goBack()" style="margin-top: 10px; background: #6c757d;">← Back</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Game Interface -->
+    <div class="game-interface" id="gameInterface">
+        <div class="container">
+            <!-- Header -->
+            <div class="header">
+                <div class="header-top">
+                    <div class="sidtm-logo">SIDTM</div>
+                    <div class="era-indicator" id="currentEra">📱 2G ERA (2001)</div>
+                </div>
+                <h1>📡 TelecomTycoon Simulation</h1>
+                <p id="welcomeMessage">Welcome Team! Build your telecom empire through strategic auctions and business decisions.</p>
+                
+                <div class="team-info">
+                    <div class="info-card">
+                        <div class="info-value" id="teamWallet">₹50,000 Cr</div>
+                        <div class="info-label">Available Capital</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-value" id="teamSpectrum">0 MHz</div>
+                        <div class="info-label">Total Spectrum</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-value" id="teamRevenue">₹0 Cr</div>
+                        <div class="info-label">Annual Revenue</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-value" id="teamCustomers">0M</div>
+                        <div class="info-label">Subscribers</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-value" id="teamMarketShare">0%</div>
+                        <div class="info-label">Market Share</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-value" id="teamRank">#-</div>
+                        <div class="info-label">Current Rank</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Government Notice -->
+            <div class="government-notice" id="governmentNotice">
+                <div class="notice-title">🏛️ GOVERNMENT OF INDIA - DEPARTMENT OF TELECOMMUNICATIONS</div>
+                <div class="notice-content" id="noticeContent">
+                    <strong>SPECTRUM AUCTION NOTICE - 2G FOUNDATION AUCTION</strong><br>
+                    The Department of Telecommunications announces India's first comprehensive telecom spectrum auction. 
+                    This historic auction marks the beginning of India's telecom revolution.<br><br>
+                    <strong>Available Spectrum:</strong> 900MHz (25 blocks per LSA), 1800MHz (25 blocks per LSA)<br>
+                    <strong>Block Size:</strong> 0.2 MHz per block<br>
+                    <strong>Reserve Price:</strong> ₹1,497 Cr/MHz (900MHz), ₹2,274 Cr/MHz (1800MHz)<br>
+                    <strong>Auction Format:</strong> SMRA - Simultaneous Multiple Round Ascending<br>
+                    <strong>Maximum Rounds:</strong> 5 rounds (simplified for simulation)
+                </div>
+                <button class="btn btn-success" onclick="openAuction()" id="auctionButton">📋 Participate in Auction</button>
+            </div>
+
+            <!-- Navigation Tabs -->
+            <div class="nav-tabs">
+                <button class="nav-tab active" onclick="showTab('auction')">🏛️ Spectrum Auction</button>
+                <button class="nav-tab" onclick="showTab('strategy')">🎯 Business Strategy</button>
+                <button class="nav-tab" onclick="showTab('investments')">💰 Investments</button>
+                <button class="nav-tab" onclick="showTab('performance')">📊 Performance</button>
+                <button class="nav-tab" onclick="showTab('leaderboard')">🏆 Leaderboard</button>
+            </div>
+
+            <!-- Auction Interface -->
+            <div class="auction-interface" id="auctionTab">
+                <h2>🏛️ Live Spectrum Auction - SMRA Format</h2>
+                
+                <div class="auction-status" id="auctionStatus">
+                    <div class="auction-round" id="auctionRound">Round 1 of 5</div>
+                    <div class="time-remaining" id="timeRemaining">Time Remaining: 90:00</div>
+                    <div style="margin-top: 10px;">
+                        <strong>Activity Requirement:</strong> <span id="activityReq">80%</span> | 
+                        <strong>Your Activity:</strong> <span id="yourActivity">0%</span>
+                    </div>
+                </div>
+
+                <table class="spectrum-table">
+                    <thead>
+                        <tr>
+                            <th>Band (MHz)</th>
+                            <th>LSA Circle</th>
+                            <th>Block Size</th>
+                            <th>Available Blocks</th>
+                            <th>Reserve Price (₹Cr/MHz)</th>
+                            <th>Current Price (₹Cr/MHz)</th>
+                            <th>Leading Bidder</th>
+                            <th>Your Bid</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="spectrumTableBody">
+                        <!-- Dynamic content populated by JavaScript -->
+                    </tbody>
+                </table>
+
+                <div class="bid-panel">
+                    <h3>📝 Place Your Bid</h3>
+                    <div class="form-group">
+                        <label class="form-label">Selected Spectrum</label>
+                        <div class="form-control" id="selectedSpectrum" style="background: #f8f9fa;">
+                            Click on a row above to select spectrum
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Number of Blocks</label>
+                        <select class="form-control" id="blockCount" onchange="updateBidCalculator()">
+                            <option value="">Select blocks...</option>
+                            <option value="1">1 Block (0.2 MHz)</option>
+                            <option value="2">2 Blocks (0.4 MHz)</option>
+                            <option value="3">3 Blocks (0.6 MHz)</option>
+                            <option value="4">4 Blocks (0.8 MHz)</option>
+                            <option value="5">5 Blocks (1.0 MHz)</option>
+                        </select>
+                    </div>
+                    
+                    <div class="bid-calculator">
+                        <h4>💰 Bid Calculator</h4>
+                        <div class="calc-row">
+                            <span>Total Spectrum:</span>
+                            <span id="calcSpectrum">0 MHz</span>
+                        </div>
+                        <div class="calc-row">
+                            <span>Price per MHz:</span>
+                            <span id="calcPrice">₹0 Cr</span>
+                        </div>
+                        <div class="calc-row" style="border-top: 2px solid #2a5298; padding-top: 8px; font-weight: bold;">
+                            <span>Total Bid Amount:</span>
+                            <span id="calcTotal">₹0 Cr</span>
+                        </div>
+                        <div class="calc-row">
+                            <span>Wallet After Bid:</span>
+                            <span id="calcRemaining">₹50,000 Cr</span>
+                        </div>
+                    </div>
+                    
+                    <button class="btn btn-success" id="submitBid" onclick="placeBid()" disabled>
+                        📝 Submit Bid
+                    </button>
+                </div>
+            </div>
+
+            <!-- Business Strategy Panel -->
+            <div class="strategy-panel" id="strategyTab">
+                <h2>🎯 Business Strategy Center</h2>
+                <p>Make strategic decisions that will impact your market position and profitability</p>
+                
+                <div class="strategy-grid">
+                    <div class="strategy-category">
+                        <h4>🎯 Market Segmentation & Targeting</h4>
+                        <div class="strategy-options">
+                            <div class="strategy-option" onclick="selectStrategy(this, 'segmentation', 'urban')">
+                                <strong>Urban Focus</strong><br>
+                                <small>Target metro cities, high ARPU customers, premium services</small>
+                            </div>
+                            <div class="strategy-option" onclick="selectStrategy(this, 'segmentation', 'rural')">
+                                <strong>Rural Focus</strong><br>
+                                <small>Wide coverage, mass market, affordable pricing</small>
+                            </div>
+                            <div class="strategy-option" onclick="selectStrategy(this, 'segmentation', 'balanced')">
+                                <strong>Balanced Approach</strong><br>
+                                <small>Mix of urban and rural markets, diversified portfolio</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="strategy-category">
+                        <h4>💰 Pricing Strategy</h4>
+                        <div class="strategy-options">
+                            <div class="strategy-option" onclick="selectStrategy(this, 'pricing', 'premium')">
+                                <strong>Premium Pricing</strong><br>
+                                <small>High prices, superior quality, exclusive services</small>
+                            </div>
+                            <div class="strategy-option" onclick="selectStrategy(this, 'pricing', 'competitive')">
+                                <strong>Competitive Pricing</strong><br>
+                                <small>Market-rate pricing, value for money proposition</small>
+                            </div>
+                            <div class="strategy-option" onclick="selectStrategy(this, 'pricing', 'penetration')">
+                                <strong>Penetration Pricing</strong><br>
+                                <small>Low prices to gain market share quickly</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="strategy-category">
+                        <h4>📱 Service Portfolio</h4>
+                        <div class="strategy-options">
+                            <div class="strategy-option" onclick="selectStrategy(this, 'services', 'voice')">
+                                <strong>Voice-Centric</strong><br>
+                                <small>Focus on call quality and coverage</small>
+                            </div>
+                            <div class="strategy-option" onclick="selectStrategy(this, 'services', 'data')">
+                                <strong>Data-Forward</strong><br>
+                                <small>Early data services and innovation</small>
+                            </div>
+                            <div class="strategy-option" onclick="selectStrategy(this, 'services', 'integrated')">
+                                <strong>Integrated Services</strong><br>
+                                <small>Voice + Data + Value-added services</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="strategy-category">
+                        <h4>🏗️ Infrastructure Strategy</h4>
+                        <div class="strategy-options">
+                            <div class="strategy-option" onclick="selectStrategy(this, 'infrastructure', 'coverage')">
+                                <strong>Coverage First</strong><br>
+                                <small>Maximize geographic reach</small>
+                            </div>
+                            <div class="strategy-option" onclick="selectStrategy(this, 'infrastructure', 'capacity')">
+                                <strong>Capacity Focus</strong><br>
+                                <small>High density in profitable areas</small>
+                            </div>
+                            <div class="strategy-option" onclick="selectStrategy(this, 'infrastructure', 'quality')">
+                                <strong>Quality Excellence</strong><br>
+                                <small>Premium network quality and experience</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="text-align: center; margin-top: 30px;">
+                    <button class="btn btn-success" onclick="implementStrategy()">💡 Implement Strategy</button>
+                    <button class="btn" onclick="calculateProjections()">📊 Calculate Business Impact</button>
+                </div>
+            </div>
+
+            <!-- Investments Panel -->
+            <div class="investment-panel" id="investmentsTab" style="display: none;">
+                <h2>💰 Investment Decisions & Resource Allocation</h2>
+                
+                <div class="investment-panel">
+                    <div class="investment-title">🏗️ Infrastructure Investment</div>
+                    <div class="investment-options">
+                        <div class="investment-item">
+                            <strong>Tower Deployment</strong><br>
+                            <input type="range" class="investment-slider" min="0" max="10000" value="0" id="towerInvestment" oninput="updateInvestment('tower', this.value)">
+                            <div>Investment: ₹<span id="towerAmount">0</span> Cr</div>
+                        </div>
+                        <div class="investment-item">
+                            <strong>Core Network</strong><br>
+                            <input type="range" class="investment-slider" min="0" max="5000" value="0" id="coreInvestment" oninput="updateInvestment('core', this.value)">
+                            <div>Investment: ₹<span id="coreAmount">0</span> Cr</div>
+                        </div>
+                        <div class="investment-item">
+                            <strong>Fiber Backhaul</strong><br>
+                            <input type="range" class="investment-slider" min="0" max="8000" value="0" id="fiberInvestment" oninput="updateInvestment('fiber', this.value)">
+                            <div>Investment: ₹<span id="fiberAmount">0</span> Cr</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="service-panel">
+                    <div class="service-title">📱 Service Rollout Strategy</div>
+                    <div class="investment-options">
+                        <div class="investment-item">
+                            <strong>Marketing & Branding</strong><br>
+                            <input type="range" class="investment-slider" min="0" max="3000" value="0" id="marketingInvestment" oninput="updateInvestment('marketing', this.value)">
+                            <div>Investment: ₹<span id="marketingAmount">0</span> Cr</div>
+                        </div>
+                        <div class="investment-item">
+                            <strong>Customer Acquisition</strong><br>
+                            <input type="range" class="investment-slider" min="0" max="2000" value="0" id="acquisitionInvestment" oninput="updateInvestment('acquisition', this.value)">
+                            <div>Investment: ₹<span id="acquisitionAmount">0</span> Cr</div>
+                        </div>
+                        <div class="investment-item">
+                            <strong>Distribution Network</strong><br>
+                            <input type="range" class="investment-slider" min="0" max="1500" value="0" id="distributionInvestment" oninput="updateInvestment('distribution', this.value)">
+                            <div>Investment: ₹<span id="distributionAmount">0</span> Cr</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="revenue-panel">
+                    <div class="revenue-title">💵 Revenue Model & Pricing</div>
+                    <div class="segment-card">
+                        <strong>Urban Segment Pricing</strong>
+                        <div class="price-input">
+                            <label>Voice per minute: ₹</label>
+                            <input type="number" step="0.1" min="0" max="5" value="1.5" id="urbanVoicePrice" onchange="updatePricing()">
+                        </div>
+                        <div class="price-input">
+                            <label>Data per MB: ₹</label>
+                            <input type="number" step="0.01" min="0" max="1" value="0.5" id="urbanDataPrice" onchange="updatePricing()">
+                        </div>
+                    </div>
+                    <div class="segment-card">
+                        <strong>Rural Segment Pricing</strong>
+                        <div class="price-input">
+                            <label>Voice per minute: ₹</label>
+                            <input type="number" step="0.1" min="0" max="3" value="1.0" id="ruralVoicePrice" onchange="updatePricing()">
+                        </div>
+                        <div class="price-input">
+                            <label>Data per MB: ₹</label>
+                            <input type="number" step="0.01" min="0" max="0.5" value="0.3" id="ruralDataPrice" onchange="updatePricing()">
+                        </div>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin-top: 20px;">
+                    <div style="font-size: 1.2em; margin-bottom: 10px;">
+                        <strong>Total Investment: ₹<span id="totalInvestment">0</span> Cr</strong>
+                    </div>
+                    <button class="btn btn-success" onclick="confirmInvestments()">💰 Confirm Investments</button>
+                    <button class="btn" onclick="resetInvestments()">🔄 Reset Allocations</button>
+                </div>
+            </div>
+
+            <!-- Performance Dashboard -->
+            <div class="performance-dashboard" id="performanceTab">
+                <h2>📊 Performance Analytics & Business Metrics</h2>
+                <div class="metrics-grid">
+                    <div class="metric-card">
+                        <div class="metric-value" id="perfRevenue">₹0 Cr</div>
+                        <div class="metric-label">Annual Revenue</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="perfEBITDA">₹0 Cr</div>
+                        <div class="metric-label">EBITDA</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="perfROI">0%</div>
+                        <div class="metric-label">Return on Investment</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="perfARPU">₹0</div>
+                        <div class="metric-label">ARPU</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="perfEfficiency">0</div>
+                        <div class="metric-label">Spectrum Efficiency (Rev/MHz)</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value" id="perfNetWorth">₹50,000 Cr</div>
+                        <div class="metric-label">Net Worth</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Leaderboard -->
+            <div class="leaderboard" id="leaderboardTab">
+                <h2>🏆 Team Rankings & Competition Analysis</h2>
+                <table class="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Team Name</th>
+                            <th>Net Worth (₹Cr)</th>
+                            <th>Revenue (₹Cr)</th>
+                            <th>Market Share</th>
+                            <th>Subscribers</th>
+                            <th>ARPU (₹)</th>
+                            <th>ROI</th>
+                            <th>Spectrum (MHz)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboardBody">
+                        <!-- Dynamic content -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Instructor Panel -->
+            <div class="instructor-panel" id="instructorPanel" style="display: none;">
+                <h2>🎓 Instructor Control Center</h2>
+                <p><strong>SIDTM TelecomTycoon Simulation Management</strong></p>
+                
+                <div class="instructor-controls">
+                    <button class="btn" onclick="advanceToNextEra()">⏭️ Advance Era</button>
+                    <button class="btn" onclick="startNewAuction()">🏛️ Start New Auction</button>
+                    <button class="btn" onclick="endCurrentRound()">⏰ End Current Round</button>
+                    <button class="btn" onclick="viewDetailedAnalytics()">📈 Detailed Analytics</button>
+                    <button class="btn" onclick="adjustMarketConditions()">📊 Market Events</button>
+                    <button class="btn" onclick="exportSimulationResults()">📋 Export Results</button>
+                    <button class="btn" onclick="resetSimulation()">🔄 Reset Simulation</button>
+                    <button class="btn" onclick="pauseSimulation()">⏸️ Pause/Resume</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global Game State
+        let gameState = {
+            userType: null,
+            currentTeam: null,
+            currentEra: '2G',
+            currentYear: 2001,
+            auctionActive: false,
+            currentRound: 1,
+            maxRounds: 5,
+            timeRemaining: 5400, // 90 minutes in seconds
+            selectedSpectrum: null,
+            teams: {},
+            spectrumData: {},
+            strategies: {},
+            investments: {},
+            activityRequirement: 80,
+            isPaused: false
+        };
+
+        // Initialize Game Data
+        function initializeGameData() {
+            // Initialize spectrum data for 2G era
+            gameState.spectrumData = {
+                '2G': {
+                    '900': {
+                        'Delhi': { blocks: 25, reservePrice: 1497, currentPrice: 1497, leadingBidder: null, bids: {} },
+                        'Mumbai': { blocks: 25, reservePrice: 1497, currentPrice: 1497, leadingBidder: null, bids: {} },
+                        'Chennai': { blocks: 25, reservePrice: 1497, currentPrice: 1497, leadingBidder: null, bids: {} },
+                        'Kolkata': { blocks: 25, reservePrice: 1497, currentPrice: 1497, leadingBidder: null, bids: {} },
+                        'Bangalore': { blocks: 25, reservePrice: 1497, currentPrice: 1497, leadingBidder: null, bids: {} }
+                    },
+                    '1800': {
+                        'Delhi': { blocks: 25, reservePrice: 2274, currentPrice: 2274, leadingBidder: null, bids: {} },
+                        'Mumbai': { blocks: 25, reservePrice: 2274, currentPrice: 2274, leadingBidder: null, bids: {} },
+                        'Chennai': { blocks: 25, reservePrice: 2274, currentPrice: 2274, leadingBidder: null, bids: {} },
+                        'Kolkata': { blocks: 25, reservePrice: 2274, currentPrice: 2274, leadingBidder: null, bids: {} },
+                        'Bangalore': { blocks: 25, reservePrice: 2274, currentPrice: 2274, leadingBidder: null, bids: {} }
+                    }
+                }
+            };
+        }
+
+        // Login System
+        function selectUserType(type) {
+            gameState.userType = type;
+            document.getElementById('loginOptions').style.display = 'none';
+            document.getElementById('loginForm').style.display = 'block';
+            
+            if (type === 'instructor') {
+                document.getElementById('teamLabel').textContent = 'Instructor ID';
+                document.getElementById('teamName').placeholder = 'Enter instructor ID';
+            } else {
+                document.getElementById('teamLabel').textContent = 'Team Name';
+                document.getElementById('teamName').placeholder = 'Enter unique team name';
+            }
+        }
+
+        function goBack() {
+            document.getElementById('loginOptions').style.display = 'grid';
+            document.getElementById('loginForm').style.display = 'none';
+            gameState.userType = null;
+        }
+
+        function login(event) {
+            event.preventDefault();
+            
+            const teamName = document.getElementById('teamName').value;
+            const accessCode = document.getElementById('accessCode').value;
+            
+            // Simple validation
+            if (gameState.userType === 'instructor' && accessCode === 'sidtm123') {
+                gameState.currentTeam = 'Instructor';
+                initializeInstructorMode();
+            } else if (gameState.userType === 'team' && accessCode === 'telecom2024') {
+                gameState.currentTeam = teamName;
+                initializeTeamMode(teamName);
+            } else {
+                showNotification('Invalid access code. Please contact your instructor.', 'error');
+                return;
+            }
+            
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('gameInterface').style.display = 'block';
+            
+            showNotification(`Welcome to SIDTM TelecomTycoon Simulation!`, 'success');
+        }
+
+        function initializeTeamMode(teamName) {
+            initializeGameData();
+            
+            if (!gameState.teams[teamName]) {
+                gameState.teams[teamName] = {
+                    name: teamName,
+                    wallet: 50000, // Starting capital in crores
+                    spectrum: {},
+                    revenue: 0,
+                    customers: 0,
+                    marketShare: 0,
+                    strategies: {},
+                    investments: {
+                        tower: 0, core: 0, fiber: 0,
+                        marketing: 0, acquisition: 0, distribution: 0
+                    },
+                    performance: {
+                        roi: 0, arpu: 0, ebitda: 0, efficiency: 0
+                    },
+                    bids: {}
+                };
+            }
+            
+            document.getElementById('welcomeMessage').textContent = 
+                `Welcome ${teamName}! Build your telecom empire through strategic decisions across the technology evolution.`;
+            
+            updateTeamDisplay();
+            updateSpectrumTable();
+            startAuctionTimer();
+        }
+
+        function initializeInstructorMode() {
+            initializeGameData();
+            document.getElementById('instructorPanel').style.display = 'block';
+            document.getElementById('welcomeMessage').textContent = 
+                'SIDTM Instructor Dashboard - Monitor and control the telecom simulation';
+            
+            updateSpectrumTable();
+        }
+
+        // UI Management
+        function showTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.auction-interface, .strategy-panel, .performance-dashboard, .leaderboard').forEach(tab => {
+                tab.style.display = 'none';
+            });
+            document.getElementById('investmentsTab').style.display = 'none';
+            
+            // Remove active class from all nav tabs
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Show selected tab
+            if (tabName === 'investments') {
+                document.getElementById('investmentsTab').style.display = 'block';
+            } else {
+                document.getElementById(tabName + 'Tab').style.display = 'block';
+            }
+            event.target.classList.add('active');
+            
+            // Update content based on tab
+            switch(tabName) {
+                case 'auction':
+                    updateSpectrumTable();
+                    break;
+                case 'performance':
+                    updatePerformanceMetrics();
+                    break;
+                case 'leaderboard':
+                    updateLeaderboard();
+                    break;
+                case 'investments':
+                    updateInvestmentDisplay();
+                    break;
+            }
+        }
+
+        function updateTeamDisplay() {
+            const team = gameState.teams[gameState.currentTeam];
+            if (!team) return;
+            
+            document.getElementById('teamWallet').textContent = `₹${team.wallet.toLocaleString()} Cr`;
+            document.getElementById('teamRevenue').textContent = `₹${team.revenue.toLocaleString()} Cr`;
+            document.getElementById('teamCustomers').textContent = `${(team.customers / 1000000).toFixed(1)}M`;
+            document.getElementById('teamMarketShare').textContent = `${team.marketShare.toFixed(1)}%`;
+            
+            // Calculate total spectrum
+            let totalSpectrum = 0;
+            Object.values(team.spectrum || {}).forEach(band => {
+                Object.values(band).forEach(lsa => {
+                    totalSpectrum += (lsa.blocks || 0) * 0.2;
+                });
+            });
+            document.getElementById('teamSpectrum').textContent = `${totalSpectrum.toFixed(1)} MHz`;
+        }
+
+        // Auction System
+        function openAuction() {
+            gameState.auctionActive = true;
+            showTab('auction');
+            showNotification('🏛️ Auction is now LIVE! Place your strategic bids wisely.', 'info');
+        }
+
+        function updateSpectrumTable() {
+            const tbody = document.getElementById('spectrumTableBody');
+            tbody.innerHTML = '';
+            
+            if (!gameState.spectrumData[gameState.currentEra]) return;
+            
+            Object.entries(gameState.spectrumData[gameState.currentEra]).forEach(([band, lsas]) => {
+                Object.entries(lsas).forEach(([lsa, data]) => {
+                    const row = document.createElement('tr');
+                    row.onclick = () => selectSpectrum(band, lsa);
+                    
+                    const yourBid = getUserBid(band, lsa);
+                    
+                    row.innerHTML = `
+                        <td>${band}</td>
+                        <td>${lsa}</td>
+                        <td>0.2 MHz</td>
+                        <td>${data.blocks}</td>
+                        <td>₹${data.reservePrice.toLocaleString()}</td>
+                        <td>₹${data.currentPrice.toLocaleString()}</td>
+                        <td>${data.leadingBidder || '-'}</td>
+                        <td>${yourBid}</td>
+                        <td><button class="btn" style="padding: 5px 10px; font-size: 12px;" onclick="selectSpectrum('${band}', '${lsa}')">Select</button></td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            });
+        }
+
+        function selectSpectrum(band, lsa) {
+            gameState.selectedSpectrum = { band, lsa };
+            document.getElementById('selectedSpectrum').textContent = `${band}MHz - ${lsa}`;
+            updateBidCalculator();
+            
+            // Highlight selected row
+            document.querySelectorAll('#spectrumTableBody tr').forEach(row => {
+                row.style.background = '';
+            });
+            event.target.closest('tr').style.background = '#e3f2fd';
+        }
+
+        function updateBidCalculator() {
+            const blockCount = parseInt(document.getElementById('blockCount').value) || 0;
+            
+            if (!gameState.selectedSpectrum || !blockCount) {
+                document.getElementById('calcSpectrum').textContent = '0 MHz';
+                document.getElementById('calcPrice').textContent = '₹0 Cr';
+                document.getElementById('calcTotal').textContent = '₹0 Cr';
+                document.getElementById('calcRemaining').textContent = `₹${gameState.teams[gameState.currentTeam]?.wallet.toLocaleString() || 0} Cr`;
+                document.getElementById('submitBid').disabled = true;
+                return;
+            }
+            
+            const { band, lsa } = gameState.selectedSpectrum;
+            const spectrumInfo = gameState.spectrumData[gameState.currentEra][band][lsa];
+            const totalSpectrum = blockCount * 0.2;
+            const totalCost = spectrumInfo.currentPrice * totalSpectrum;
+            const remainingWallet = (gameState.teams[gameState.currentTeam]?.wallet || 0) - totalCost;
+            
+            document.getElementById('calcSpectrum').textContent = `${totalSpectrum.toFixed(1)} MHz`;
+            document.getElementById('calcPrice').textContent = `₹${spectrumInfo.currentPrice.toLocaleString()} Cr`;
+            document.getElementById('calcTotal').textContent = `₹${totalCost.toLocaleString()} Cr`;
+            document.getElementById('calcRemaining').textContent = `₹${remainingWallet.toLocaleString()} Cr`;
+            
+            document.getElementById('submitBid').disabled = remainingWallet < 0 || !gameState.auctionActive;
+        }
+
+        function placeBid() {
+            if (!gameState.selectedSpectrum || !gameState.currentTeam) return;
+            
+            const blockCount = parseInt(document.getElementById('blockCount').value);
+            const { band, lsa } = gameState.selectedSpectrum;
+            const spectrumInfo = gameState.spectrumData[gameState.currentEra][band][lsa];
+            const totalCost = spectrumInfo.currentPrice * blockCount * 0.2;
+            
+            const team = gameState.teams[gameState.currentTeam];
+            if (team.wallet < totalCost) {
+                showNotification('💸 Insufficient funds for this bid!', 'error');
+                return;
+            }
+            
+            // Store bid
+            const bidKey = `${band}-${lsa}`;
+            team.bids[bidKey] = {
+                band, lsa, blocks: blockCount, 
+                price: spectrumInfo.currentPrice, 
+                total: totalCost
+            };
+            
+            // Update leading bidder
+            spectrumInfo.leadingBidder = gameState.currentTeam;
+            spectrumInfo.bids[gameState.currentTeam] = blockCount;
+            
+            updateSpectrumTable();
+            showNotification(`📝 Bid placed: ${blockCount} blocks of ${band}MHz in ${lsa}!`, 'success');
+            
+            // Reset selection
+            gameState.selectedSpectrum = null;
+            document.getElementById('selectedSpectrum').textContent = 'Click on a row above to select spectrum';
+            document.getElementById('blockCount').value = '';
+            updateBidCalculator();
+        }
+
+        function getUserBid(band, lsa) {
+            const team = gameState.teams[gameState.currentTeam];
+            if (!team) return '-';
+            
+            const bidKey = `${band}-${lsa}`;
+            const bid = team.bids[bidKey];
+            return bid ? `${bid.blocks} blocks` : '-';
+        }
+
+        // Strategy System
+        function selectStrategy(element, category, strategy) {
+            element.parentElement.querySelectorAll('.strategy-option').forEach(opt => {
+                opt.classList.remove('selected');
+            });
+            
+            element.classList.add('selected');
+            
+            if (!gameState.strategies[gameState.currentTeam]) {
+                gameState.strategies[gameState.currentTeam] = {};
+            }
+            gameState.strategies[gameState.currentTeam][category] = strategy;
+            
+            showNotification(`✅ Selected ${strategy} strategy for ${category}`, 'info');
+        }
+
+        function implementStrategy() {
+            const team = gameState.teams[gameState.currentTeam];
+            const strategies = gameState.strategies[gameState.currentTeam] || {};
+            
+            if (Object.keys(strategies).length < 4) {
+                showNotification('⚠️ Please select all strategy options before implementing', 'warning');
+                return;
+            }
+            
+            const impact = calculateStrategyImpact(strategies);
+            
+            team.revenue += impact.revenue;
+            team.customers += impact.customers;
+            team.performance.arpu = impact.arpu;
+            team.performance.roi = impact.roi;
+            team.marketShare = calculateMarketShare(team.customers);
+            
+            updateTeamDisplay();
+            updatePerformanceMetrics();
+            
+            showNotification(`🚀 Strategy implemented! +${impact.customers.toLocaleString()} customers, +₹${impact.revenue.toLocaleString()} Cr revenue`, 'success');
+        }
+
+        function calculateStrategyImpact(strategies) {
+            let baseCustomers = 5000000;
+            let baseRevenue = 1000;
+            let baseARPU = 150;
+            
+            // Apply strategy modifiers
+            if (strategies.segmentation === 'urban') {
+                baseCustomers *= 0.8;
+                baseARPU *= 1.5;
+                baseRevenue *= 1.2;
+            } else if (strategies.segmentation === 'rural') {
+                baseCustomers *= 1.5;
+                baseARPU *= 0.8;
+            }
+            
+            if (strategies.pricing === 'premium') {
+                baseCustomers *= 0.7;
+                baseARPU *= 1.8;
+                baseRevenue *= 1.3;
+            } else if (strategies.pricing === 'penetration') {
+                baseCustomers *= 1.8;
+                baseARPU *= 0.6;
+                baseRevenue *= 1.1;
+            }
+            
+            const roi = ((baseRevenue * 12 - baseRevenue * 8) / (baseRevenue * 8)) * 100;
+            
+            return {
+                customers: Math.floor(baseCustomers),
+                revenue: Math.floor(baseRevenue),
+                arpu: Math.floor(baseARPU),
+                roi: Math.floor(roi)
+            };
+        }
+
+        // Investment System
+        function updateInvestment(type, value) {
+            const team = gameState.teams[gameState.currentTeam];
+            if (!team) return;
+            
+            team.investments[type] = parseInt(value);
+            document.getElementById(type + 'Amount').textContent = value;
+            
+            const total = Object.values(team.investments).reduce((sum, val) => sum + val, 0);
+            document.getElementById('totalInvestment').textContent = total.toLocaleString();
+        }
+
+        function confirmInvestments() {
+            const team = gameState.teams[gameState.currentTeam];
+            const totalInvestment = Object.values(team.investments).reduce((sum, val) => sum + val, 0);
+            
+            if (totalInvestment > team.wallet) {
+                showNotification('💸 Total investment exceeds available capital!', 'error');
+                return;
+            }
+            
+            team.wallet -= totalInvestment;
+            
+            // Calculate business impact
+            const impact = calculateInvestmentImpact(team.investments);
+            team.revenue += impact.revenue;
+            team.customers += impact.customers;
+            
+            updateTeamDisplay();
+            showNotification(`💰 Investments confirmed! Business impact calculated.`, 'success');
+        }
+
+        function calculateInvestmentImpact(investments) {
+            const revenue = (investments.tower * 0.5) + (investments.core * 0.3) + (investments.marketing * 0.8);
+            const customers = (investments.tower * 1000) + (investments.acquisition * 2000);
+            
+            return { revenue: Math.floor(revenue), customers: Math.floor(customers) };
+        }
+
+        // Performance Tracking
+        function updatePerformanceMetrics() {
+            const team = gameState.teams[gameState.currentTeam];
+            if (!team) return;
+            
+            document.getElementById('perfRevenue').textContent = `₹${team.revenue.toLocaleString()} Cr`;
+            document.getElementById('perfEBITDA').textContent = `₹${Math.floor(team.revenue * 0.35).toLocaleString()} Cr`;
+            document.getElementById('perfROI').textContent = `${team.performance.roi.toFixed(1)}%`;
+            document.getElementById('perfARPU').textContent = `₹${team.performance.arpu}`;
+            document.getElementById('perfNetWorth').textContent = `₹${(team.wallet + team.revenue).toLocaleString()} Cr`;
+            
+            const totalSpectrum = calculateTotalSpectrum(team.spectrum);
+            const efficiency = totalSpectrum > 0 ? (team.revenue / totalSpectrum).toFixed(1) : 0;
+            document.getElementById('perfEfficiency').textContent = `${efficiency} Cr/MHz`;
+        }
+
+        function calculateTotalSpectrum(spectrum) {
+            let total = 0;
+            Object.values(spectrum || {}).forEach(band => {
+                Object.values(band).forEach(lsa => {
+                    total += (lsa.blocks || 0) * 0.2;
+                });
+            });
+            return total;
+        }
+
+        function calculateMarketShare(customers) {
+            const totalMarket = 500000000; // 500M total addressable market
+            return (customers / totalMarket) * 100;
+        }
+
+        // Auction Timer
+        function startAuctionTimer() {
+            if (gameState.isPaused) return;
+            
+            const timer = setInterval(() => {
+                if (gameState.isPaused) return;
+                
+                gameState.timeRemaining--;
+                
+                const minutes = Math.floor(gameState.timeRemaining / 60);
+                const seconds = gameState.timeRemaining % 60;
+                document.getElementById('timeRemaining').textContent = 
+                    `Time Remaining: ${minutes}:${seconds.toString().padStart(2, '0')}`;
+                
+                if (gameState.timeRemaining <= 0) {
+                    clearInterval(timer);
+                    endAuctionRound();
+                }
+            }, 1000);
+        }
+
+        function endAuctionRound() {
+            gameState.currentRound++;
+            
+            if (gameState.currentRound > gameState.maxRounds) {
+                endAuction();
+                return;
+            }
+            
+            // Process bids and update prices
+            processBids();
+            
+            // Reset timer and increase activity requirement
+            gameState.timeRemaining = gameState.currentRound <= 2 ? 5400 : 3600; // 90 min for first 2 rounds, 60 min after
+            gameState.activityRequirement = Math.min(100, gameState.activityRequirement + 10);
+            
+            document.getElementById('auctionRound').textContent = `Round ${gameState.currentRound} of ${gameState.maxRounds}`;
+            document.getElementById('activityReq').textContent = `${gameState.activityRequirement}%`;
+            
+            showNotification(`📊 Round ${gameState.currentRound - 1} completed! Round ${gameState.currentRound} begins.`, 'info');
+            startAuctionTimer();
+        }
+
+        function processBids() {
+            // Simple bid processing - increase prices where there's competition
+            Object.values(gameState.spectrumData[gameState.currentEra]).forEach(band => {
+                Object.values(band).forEach(spectrumInfo => {
+                    const bidCount = Object.keys(spectrumInfo.bids).length;
+                    if (bidCount > 1) {
+                        spectrumInfo.currentPrice = Math.floor(spectrumInfo.currentPrice * 1.1); // 10% increase
+                    }
+                });
+            });
+            
+            updateSpectrumTable();
+        }
+
+        function endAuction() {
+            gameState.auctionActive = false;
+            
+            // Award spectrum to winning bidders
+            awardSpectrum();
+            
+            showNotification('🏆 Auction concluded! Spectrum has been allocated. Check your performance.', 'success');
+            
+            // Move to next phase
+            setTimeout(() => {
+                showNotification('📊 Moving to business strategy phase. Implement your plans!', 'info');
+                showTab('strategy');
+            }, 3000);
+        }
+
+        function awardSpectrum() {
+            Object.entries(gameState.spectrumData[gameState.currentEra]).forEach(([band, lsas]) => {
+                Object.entries(lsas).forEach(([lsa, data]) => {
+                    if (data.leadingBidder) {
+                        const team = gameState.teams[data.leadingBidder];
+                        const bidKey = `${band}-${lsa}`;
+                        const bid = team.bids[bidKey];
+                        
+                        if (bid) {
+                            // Award spectrum
+                            if (!team.spectrum[band]) team.spectrum[band] = {};
+                            team.spectrum[band][lsa] = { blocks: bid.blocks, cost: bid.total };
+                            
+                            // Deduct payment
+                            team.wallet -= bid.total;
+                        }
+                    }
+                });
+            });
+            
+            updateTeamDisplay();
+        }
+
+        // Leaderboard
+        function updateLeaderboard() {
+            const tbody = document.getElementById('leaderboardBody');
+            tbody.innerHTML = '';
+            
+            const teams = Object.values(gameState.teams).map(team => ({
+                ...team,
+                netWorth: team.wallet + team.revenue,
+                totalSpectrum: calculateTotalSpectrum(team.spectrum)
+            })).sort((a, b) => b.netWorth - a.netWorth);
+            
+            teams.forEach((team, index) => {
+                const row = document.createElement('tr');
+                if (team.name === gameState.currentTeam) {
+                    row.classList.add('team-row', 'current-team');
+                }
+                
+                const rank = index + 1;
+                const rankEmoji = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : rank;
+                
+                row.innerHTML = `
+                    <td>${rankEmoji} ${rank}</td>
+                    <td><strong>${team.name}</strong></td>
+                    <td>₹${team.netWorth.toLocaleString()}</td>
+                    <td>₹${team.revenue.toLocaleString()}</td>
+                    <td>${team.marketShare.toFixed(1)}%</td>
+                    <td>${(team.customers / 1000000).toFixed(1)}M</td>
+                    <td>₹${team.performance.arpu}</td>
+                    <td>${team.performance.roi.toFixed(1)}%</td>
+                    <td>${team.totalSpectrum.toFixed(1)}</td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+            // Update team rank
+            const currentTeamRank = teams.findIndex(team => team.name === gameState.currentTeam) + 1;
+            document.getElementById('teamRank').textContent = `#${currentTeamRank}`;
+        }
+
+        // Instructor Functions
+        function advanceToNextEra() {
+            const eras = ['2G', '3G', '4G', '5G'];
+            const currentIndex = eras.indexOf(gameState.currentEra);
+            
+            if (currentIndex < eras.length - 1) {
+                gameState.currentEra = eras[currentIndex + 1];
+                gameState.currentYear += 5;
+                gameState.currentRound = 1;
+                gameState.auctionActive = false;
+                
+                document.getElementById('currentEra').textContent = `${getEraIcon(gameState.currentEra)} ${gameState.currentEra} ERA (${gameState.currentYear})`;
+                
+                updateGovernmentNotice();
+                showNotification(`🚀 Advanced to ${gameState.currentEra} Era!`, 'success');
+            }
+        }
+
+        function getEraIcon(era) {
+            const icons = { '2G': '📱', '3G': '🌐', '4G': '⚡', '5G': '🚀' };
+            return icons[era] || '📡';
+        }
+
+        function updateGovernmentNotice() {
+            const notices = {
+                '3G': {
+                    title: '3G SPECTRUM AUCTION NOTICE',
+                    content: 'Historic 3G spectrum auction for high-speed data services. 2100MHz band available for UMTS technology.',
+                    bands: '2100MHz (5 MHz blocks)',
+                    price: '₹4,315 Cr/MHz'
+                },
+                '4G': {
+                    title: '4G LTE SPECTRUM AUCTION NOTICE',
+                    content: 'Revolutionary 4G LTE spectrum for ultra-fast broadband. Multiple bands available.',
+                    bands: '700MHz, 2300MHz, 2500MHz',
+                    price: '₹6,850 Cr/MHz (Average)'
+                },
+                '5G': {
+                    title: '5G SPECTRUM AUCTION NOTICE',
+                    content: 'Historic 5G spectrum auction for next-generation services. mmWave bands included.',
+                    bands: '3300MHz, 26GHz',
+                    price: '₹4,315 Cr/MHz (3300MHz)'
+                }
+            };
+            
+            const notice = notices[gameState.currentEra];
+            if (notice) {
+                document.getElementById('noticeContent').innerHTML = `
+                    <strong>${notice.title}</strong><br>
+                    ${notice.content}<br><br>
+                    <strong>Available Spectrum:</strong> ${notice.bands}<br>
+                    <strong>Reserve Price:</strong> ${notice.price}<br>
+                    <strong>Technology:</strong> ${gameState.currentEra}<br>
+                    <strong>Auction Format:</strong> SMRA - Simplified 5 rounds for simulation
+                `;
+            }
+        }
+
+        // Utility Functions
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 5000);
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            showTab('auction');
+            console.log('SIDTM TelecomTycoon Simulation Platform Initialized');
+        });
+    </script>
+</body>
+</html>
